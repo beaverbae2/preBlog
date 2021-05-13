@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.UserMapper">
+
+    <insert id="save" parameterType="User">
+        insert into user (uid, password, nickname, status)
+        values (#{uid}, #{password}, #{nickname}, 1)
+    </insert>
+
+    <select id="findByUid" parameterType="String" resultType="User">
+        select * from user where uid = #{uid}
+    </select>
+
+
+    <update id="delete" parameterType="String">
+        update user set status = false where uid = #{uid}
+    </update>
+
+</mapper>

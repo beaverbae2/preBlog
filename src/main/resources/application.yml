@@ -1,0 +1,24 @@
+server:
+  port : 8081
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+    password: as134679
+
+mybatis:
+  type-aliases-package: com.example.demo.dto
+  mapper-locations: mapper/*Mapper.xml
+
+logging:
+  level:
+    com:
+      mybatis:
+        mapper: trace
+      example:
+        demo: trace
+jwt:
+  expmin: 5
+  salt: MYSALT
