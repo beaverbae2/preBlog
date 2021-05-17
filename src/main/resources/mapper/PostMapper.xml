@@ -3,20 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.mapper.UserMapper">
+<mapper namespace="com.example.demo.mapper.PostMapper">
 
-    <insert id="save" parameterType="User">
-        insert into user (uid, password, nickname, status)
-        values (#{uid}, #{password}, #{nickname}, 1)
+    <insert id="write" parameterType="Post">
+        insert into post ( title, content, uid, shows, datetime, status)
+        values (#{title}, #{content}, #{uid}, #{shows}, now(), 0)
     </insert>
 
-    <select id="findByUid" parameterType="String" resultType="User">
-        select * from user where uid = #{uid}
+    <select id="show" parameterType="Long" resultType="Post">
+        select*from post where id = #{id};
     </select>
 
-
-    <update id="delete" parameterType="String">
-        update user set status = false where uid = #{uid}
-    </update>
 
 </mapper>

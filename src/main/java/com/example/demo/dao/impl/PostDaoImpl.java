@@ -1,29 +1,26 @@
 package com.example.demo.dao.impl;
 
-import com.example.demo.dao.UserDao;
-import com.example.demo.dto.User;
-import com.example.demo.mapper.UserMapper;
+import com.example.demo.dao.PostDao;
+import com.example.demo.dto.Post;
+import com.example.demo.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class UserDaoImpl implements UserDao {
-    private final UserMapper mapper;
+public class PostDaoImpl implements PostDao {
+
+    private final PostMapper mapper;
 
     @Override
-    public int save(User user) {
-        return mapper.save(user);
+    public int write(Post post) {
+        return mapper.write(post);
     }
 
     @Override
-    public User findByUid(String uid) {
-        return mapper.findByUid(uid);
+    public Post show(Long id) {
+        return mapper.show(id);
     }
 
-    @Override
-    public int delete(String uid) {
-        return mapper.delete(uid);
-    }
+
 }

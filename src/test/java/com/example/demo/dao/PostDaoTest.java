@@ -1,70 +1,54 @@
 package com.example.demo.dao;
 
-import com.example.demo.dao.impl.UserDaoImpl;
-import com.example.demo.dto.User;
+import com.example.demo.dao.impl.PostDaoImpl;
+import com.example.demo.dto.Post;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 내장 DB(Replace.ANY)가 아닌 실제 DB 사용
-@Import(UserDaoImpl.class) // 구체화된 클래스를 가져와야함
-class UserDaoTest {
+@Import(PostDaoImpl.class) // 구체화된 클래스를 가져와야함
+class PostDaoTest {
     @Autowired
-    private UserDao userDao;
+    private PostDao postDao;
 
-    private User user1;
+    private Post post1;
 
     @BeforeEach
     void setUp() {
-        user1 = User.builder()
-                .uid("hello")
-                .nickname("kim3")
-                .password("1234")
-                .status(true)
-                .build();
+        post1 = Post.builder()
+        .title("안녕하세요")
+        .content("하이루")
+        .uid(1L)
+        .shows(0)
+        .build();
     }
-
     @Test
-    void join() throws Exception {
-        int count = userDao.save(user1);
+    void write() throws Exception {
+        int count = postDao.write(post1);
         assertThat(count).isEqualTo(1);
     }
 
     @Test
-    void 중복된_아이디_인지_확인한다() {
-        // given
-        User user2 = User.builder()
-                .uid("hello")
-                .nickname("Bae3")
-                .password("1234")
-                .status(true)
-                .build();
-
-        // when
-        int userCount = userDao.save(user1);
-        User dupUser = userDao.findByUid(user2.getUid());
-
-        // then
-        assertThat(userCount).isEqualTo(1);
-        assertThat(dupUser).isNotNull();
+    void show() throws Exception {
+        Post post = postDao.show(1L);
+        assertThat(post.getId()).isEqualTo(1);
+        assertThat(post.getUid()).isEqualTo(1L);
+        assertThat(post.getTitle()).isEqualTo("하이");
+        assertThat(post.getContent()).isEqualTo("하이루");
+        assertThat(post.getShows()).isEqualTo(1);
+        assertThat(post.isStatus()).isEqualTo(true);
     }
 
-    @Test
-    void 회원_탈퇴를_한다() {
-        // when
-        userDao.save(user1);
-        userDao.delete(user1.getUid());
-        boolean status =  userDao.findByUid(user1.getUid()).isStatus();
 
-        // then
-        assertThat(status).isEqualTo(false);
-    }
+
+
+
+
 }

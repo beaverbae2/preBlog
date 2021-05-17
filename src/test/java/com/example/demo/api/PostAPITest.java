@@ -1,5 +1,6 @@
 package com.example.demo.api;
 
+import com.example.demo.dto.Post;
 import com.example.demo.dto.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest // (webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
-public class UserAPITest {
+public class PostAPITest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -28,91 +28,51 @@ public class UserAPITest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private User user1;
-
-    @BeforeEach
-    void setUp() {
-        user1 = User.builder()
-                .uid("hello")
-                .nickname("kim3")
-                .password("1234")
+    @Test
+    void write() throws Exception {
+        Post post1 =  Post.builder()
+                .id(1L)
+                .title("하이")
+                .content("하이루")
+                .uid(1L)
+                .shows(1)
                 .status(true)
                 .build();
-    }
 
-    @Test
-    void sign() throws Exception {
-        String content = objectMapper.writeValueAsString(user1);
-        System.out.println(content);
-        ResultActions actions = mockMvc.perform(post("/user")
+        String content = objectMapper.writeValueAsString(post1);
+        ResultActions actions = mockMvc.perform(post("/post")
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
 
+        //then
         actions.andExpect(status().isOk())
                 .andExpect(content().string("1"))
                 .andDo(print());
-    }
 
+    }
     @Test
-    void 중복된_아이디_인지_확인한다() throws Exception {
-        // given
-        User user2 = User.builder()
-                .uid("hello")
-                .nickname("Bae3")
-                .password("1234")
+    void show() throws Exception {
+        Post post1 =  Post.builder()
+                .id(1L)
+                .title("하이")
+                .content("하이루")
+                .uid(1L)
+                .shows(1)
                 .status(true)
                 .build();
 
-        String user1JsonString = objectMapper.writeValueAsString(user1);
+        ResultActions actions = mockMvc.perform(get("/post")
+            .param("id",post1.getId().toString()));
 
-        // when
-        ResultActions actions1 = mockMvc.perform(post("/user")
-                .content(user1JsonString)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-
-        ResultActions actions2 = mockMvc.perform(get("/user")
-                .param("uid", user2.getUid()));
-
-        // then
-        actions1.andDo(print())
+        actions.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("1"));
-
-        actions2.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uid").value(user1.getUid()));
+                .andExpect(jsonPath("$.id").value(post1.getId()))
+                .andExpect(jsonPath("$.uid").value(post1.getUid()))
+                .andExpect(jsonPath("$.title").value(post1.getTitle()))
+                .andExpect(jsonPath("$.content").value(post1.getContent()))
+                .andExpect(jsonPath("$.shows").value(post1.getShows()))
+                .andExpect(jsonPath("$.status").value(post1.isStatus()));
     }
 
-    @Test
-    void 회원_탈퇴를_한다() throws Exception {
-        // when
-        String user1JsonString = objectMapper.writeValueAsString(user1);
-
-        ResultActions actions1 = mockMvc.perform(post("/user")
-                .content(user1JsonString)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
-
-        ResultActions actions2 = mockMvc.perform(put("/user")
-                .param("uid", user1.getUid()));
-
-        ResultActions actions3 = mockMvc.perform(get("/user")
-                .param("uid", user1.getUid()));
-
-        // then
-        actions1.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("1"));
-
-        actions2.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("1"));
-
-        actions3.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uid").value(user1.getUid()))
-                .andExpect(jsonPath("$.status").value(false));
-    }
 }

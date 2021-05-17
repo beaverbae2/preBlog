@@ -1,10 +1,9 @@
 package com.example.demo.dao;
 
-import com.example.demo.dto.User;
+import com.example.demo.dto.Post;
 
+public interface PostDao {
 
-public interface UserDao {
-    public int save(User user); // 회원 가입
-    public User findByUid(String uid); // 회원 정보 확인
-    public int delete(String uid); // 회원 탈퇴
+    int write(Post post);
+    Post show(Long id);
 }

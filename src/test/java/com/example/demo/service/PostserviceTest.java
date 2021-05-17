@@ -1,85 +1,68 @@
 package com.example.demo.service;
 
-import com.example.demo.dao.UserDao;
-import com.example.demo.dto.User;
-import com.example.demo.service.impl.UserServiceImpl;
+
+import com.example.demo.dao.PostDao;
+import com.example.demo.dto.Post;
+import com.example.demo.service.impl.PostServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-class UserServiceTest {
-    private UserService userService;
+class PostserviceTest {
+    private PostService postService;
 
     @Mock
-    private UserDao userDao;
+    private PostDao postDao;
 
-    private User user1;
+    private Post post1;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        userService = new UserServiceImpl(userDao);
+        postService = new PostServiceImpl(postDao);
 
-        user1 = User.builder()
-                .uid("hello")
-                .nickname("kim3")
-                .password("1234")
+        post1 = Post.builder()
+                .title("안녕하세요")
+                .content("하이루")
+                .uid(1L)
+                .shows(0)
                 .status(true)
                 .build();
     }
 
-
     @Test
-    void 아이디_비밀번호_닉네임을_받아_회원가입을_한다() throws Exception {
-        // stub
-        when(userDao.save(user1)).thenReturn(1);
+    void write() throws Exception {
 
-        int count = userService.save(user1);
+        when(postDao.write(post1)).thenReturn(1);
+
+        int count = postService.write(post1);
         assertThat(count).isEqualTo(1);
     }
 
     @Test
-    void 중복된_아이디_인지_확인한다() {
-        // given
-        User user2 = User.builder()
-                .uid("hello")
-                .nickname("Bae3")
-                .password("1234")
-                .status(true)
-                .build();
+    void show() throws Exception {
+        //given
+        Post post1 =  Post.builder()
+                     .id(1L)
+                     .title("하이")
+                     .content("하이루")
+                     .uid(1L)
+                     .shows(1)
+                     .status(true)
+                     .build();
+        when(postDao.show(1L)).thenReturn(post1);
 
-        // when
-        when(userDao.save(user1)).thenReturn(1);
-        when(userDao.findByUid(user2.getUid())).thenReturn(user1);
-
-
-        // then
-        assertThat(userService.save(user1)).isEqualTo(1);
-        assertThat(userService.findByUid(user2.getUid())).isEqualTo(user1);
+        Post post2 = postService.show(post1.getId());
+        assertThat(post2.getId()).isEqualTo(post1.getId());
+        assertThat(post2.getUid()).isEqualTo(post1.getUid());
+        assertThat(post2.getTitle()).isEqualTo(post1.getTitle());
+        assertThat(post2.getContent()).isEqualTo(post1.getContent());
+        assertThat(post2.getShows()).isEqualTo(post1.getShows());
+        assertThat(post2.isStatus()).isEqualTo(post1.isStatus());
     }
 
-    @Test
-    void 회원_탈퇴를_한다() {
-        // when
-        when(userDao.save(user1)).thenReturn(1);
-        when(userDao.delete(user1.getUid())).thenReturn(1);
-        when(userDao.findByUid(user1.getUid())).thenReturn(user1);
-        user1.setStatus(false);
-
-        // then
-        assertThat(userService.save(user1)).isEqualTo(1);
-        assertThat(userService.delete(user1.getUid())).isEqualTo(1);
-        assertThat(userService.findByUid(user1.getUid()).isStatus()).isEqualTo(false);
-    }
 }
