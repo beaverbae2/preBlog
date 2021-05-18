@@ -11,8 +11,23 @@
     </insert>
 
     <select id="show" parameterType="Long" resultType="Post">
-        select*from post where id = #{id};
+        select * from post where id = #{id};
     </select>
 
+    <select id="showAll" resultType="Post">
+        select * from post;
+    </select>
 
+    <update id="update" parameterType="Post" >
+        update post set title = #{title}, content = #{content}, status = true
+            where id = #{id}
+    </update>
+
+    <update id="updateShows" parameterType="Long">
+        update post set shows = shows+1 where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        delete from post where id = #{id}
+    </delete>
 </mapper>

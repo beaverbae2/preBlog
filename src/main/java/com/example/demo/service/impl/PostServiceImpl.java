@@ -7,6 +7,8 @@ import com.example.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -20,5 +22,25 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post show(Long id) {
         return postDao.show(id);
+    }
+
+    @Override
+    public List<Post> showAll() {
+        return postDao.showAll();
+    }
+
+    @Override
+    public int update(Post post) {
+        return postDao.update(post);
+    }
+
+    @Override
+    public int updateShows(Long id) {
+        return postDao.updateShows(id);
+    }
+
+    @Override
+    public int delete(Long id) {
+        return postDao.delete(id);
     }
 }
