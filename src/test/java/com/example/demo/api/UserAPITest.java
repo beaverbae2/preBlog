@@ -115,4 +115,35 @@ public class UserAPITest {
                 .andExpect(jsonPath("$.uid").value(user1.getUid()))
                 .andExpect(jsonPath("$.status").value(false));
     }
+
+    @Test
+    void 회원_수정을_한다() throws Exception {
+        User user1 = User.builder()
+                .id(2L)
+                .uid("hello")
+                .nickname("kim")
+                .password("1234")
+                .status(true)
+                .build();
+
+        String content = objectMapper.writeValueAsString(user1);
+
+        ResultActions actions1 = mockMvc.perform(put("/user/renewal")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        ResultActions actions2 = mockMvc.perform((get("/user")
+                .param("uid", user1.getUid().toString())));
+
+        actions1.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+
+        actions2.andDo(print())
+                .andExpect((status().isOk()))
+                .andExpect(jsonPath("$.uid").value(user1.getUid()))
+                .andExpect(jsonPath("$.nickname").value(user1.getNickname()))
+                .andExpect(jsonPath("$.password").value(user1.getPassword()));
+    }
 }

@@ -19,4 +19,7 @@
         update user set status = false where uid = #{uid}
     </update>
 
+    <update id="update" parameterType="User">
+        update user set password=#{password},nickname=#{nickname} where uid = #{uid}
+    </update>
 </mapper>

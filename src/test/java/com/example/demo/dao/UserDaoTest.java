@@ -67,4 +67,25 @@ class UserDaoTest {
         // then
         assertThat(status).isEqualTo(false);
     }
+
+    @Test
+    void 회원_수정을_한다(){
+        User user1 = User.builder()
+                .id(2L)
+                .uid("hello")
+                .nickname("kim")
+                .password("1234")
+                .status(true)
+                .build();
+
+        int count = userDao.update(user1);
+        User user2 = userDao.findByUid("hello");
+
+        assertThat(count).isEqualTo(1);
+        assertThat(user2.getId()).isEqualTo(2L);
+        assertThat(user2.getUid()).isEqualTo("hello");
+        assertThat(user2.getPassword()).isEqualTo("1234");
+        assertThat(user2.getNickname()).isEqualTo("kim");
+        assertThat(user2.isStatus()).isEqualTo(true);
+    }
 }

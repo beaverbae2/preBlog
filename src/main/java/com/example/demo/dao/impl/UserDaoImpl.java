@@ -26,4 +26,9 @@ public class UserDaoImpl implements UserDao {
     public int delete(String uid) {
         return mapper.delete(uid);
     }
+
+    @Override
+    public int update(User user) {
+        return mapper.update(user);
+    }
 }

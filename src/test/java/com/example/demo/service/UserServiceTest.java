@@ -82,4 +82,27 @@ class UserServiceTest {
         assertThat(userService.delete(user1.getUid())).isEqualTo(1);
         assertThat(userService.findByUid(user1.getUid()).isStatus()).isEqualTo(false);
     }
+
+    @Test
+    void 회원_수정을_한다(){
+        User user1 = User.builder()
+                .id(2L)
+                .uid("hello")
+                .nickname("kim")
+                .password("1234")
+                .status(true)
+                .build();
+
+        when(userDao.update(user1)).thenReturn(1);
+        when(userDao.findByUid("hello")).thenReturn(user1);
+
+        assertThat(userService.update(user1)).isEqualTo(1);
+
+        User user2 = userService.findByUid("hello");
+        assertThat(user2.getId()).isEqualTo(2L);
+        assertThat(user2.getUid()).isEqualTo("hello");
+        assertThat(user2.getPassword()).isEqualTo("1234");
+        assertThat(user2.getNickname()).isEqualTo("kim");
+        assertThat(user2.isStatus()).isEqualTo(true);
+    }
 }

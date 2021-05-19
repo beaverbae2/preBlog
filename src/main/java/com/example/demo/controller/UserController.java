@@ -27,4 +27,7 @@ public class UserController {
 
     @PutMapping(value = "/user")
     public int delete(@RequestParam String uid) { return service.delete(uid); }
+
+    @PutMapping(value = "/user/renewal")
+    public int update(@RequestBody User user){return service.update(user);}
 }

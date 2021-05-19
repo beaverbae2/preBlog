@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.User;
 import com.example.demo.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import javax.xml.transform.Result;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -130,5 +133,39 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uid").value(user1.getUid()))
                 .andExpect(jsonPath("$.status").value(false));
+    }
+
+    @Test
+    void 회원_수정을_한다() throws Exception {
+        User user1 = User.builder()
+                .id(2L)
+                .uid("hello")
+                .nickname("kim")
+                .password("1234")
+                .status(true)
+                .build();
+
+        String content = objectMapper.writeValueAsString(user1);
+
+        when(mockUserService.update(user1)).thenReturn(1);
+        when(mockUserService.findByUid("hello")).thenReturn(user1);
+
+        ResultActions actions1 = mockMvc.perform(put("/user/renewal")
+                .content(content)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+
+        ResultActions actions2 = mockMvc.perform((get("/user")
+                .param("uid", user1.getUid().toString())));
+
+        actions1.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+
+        actions2.andDo(print())
+                .andExpect((status().isOk()))
+                .andExpect(jsonPath("$.uid").value(user1.getUid()))
+                .andExpect(jsonPath("$.nickname").value(user1.getNickname()))
+                .andExpect(jsonPath("$.password").value(user1.getPassword()));
     }
 }

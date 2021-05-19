@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.CommentMapper">
+
+    <insert id="write" parameterType="Comment">
+        insert into comment ( content, uid, pid, datetime, status)
+        values (#{content}, #{uid}, #{pid}, now(), 0)
+    </insert>
+
+    <select id="show" parameterType="Long" resultType="Comment">
+        select * from comment where id = #{id}
+    </select>
+
+    <select id="showAll" resultType="Comment">
+        select * from comment
+    </select>
+
+    <update id="update" parameterType="Comment">
+        update comment set content = #{content}, status = true where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        delete from comment where id = #{id}
+    </delete>
+</mapper>
